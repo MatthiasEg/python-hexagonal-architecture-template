@@ -1,0 +1,61 @@
+site_name: FastAPI Hexagonal Template
+site_description: >-
+  Production-grade hexagonal-architecture FastAPI template — layer boundaries enforced in CI,
+  built for AI coding agents.
+site_url: https://matthiaseg.github.io/python-hexagonal-architecture-template/
+repo_url: https://github.com/MatthiasEg/python-hexagonal-architecture-template
+repo_name: MatthiasEg/python-hexagonal-architecture-template
+edit_uri: edit/main/docs/
+copyright: Copyright &copy; 2026 Matthias Egli — MIT License
+
+theme:
+  name: material
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to light mode
+  features:
+    - navigation.instant
+    - navigation.tracking
+    - navigation.sections
+    - navigation.top
+    - content.code.copy
+    - toc.follow
+    - search.suggest
+
+markdown_extensions:
+  - admonition
+  - toc:
+      permalink: true
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.superfences
+  - pymdownx.inlinehilite
+  - tables
+
+nav:
+  - Home: index.md
+  - Architecture: architecture.md
+  - Adding a feature: adding-a-feature.md
+  - Validation loop: validation-loop.md
+  - Agent-native: agent-native.md
+  - Comparison: comparison.md
+  - FAQ: faq.md
+  - Decision records:
+      - Overview: adr/README.md
+      - ADR-0001 — Enforce boundaries with import-linter: adr/0001-enforce-hexagonal-boundaries-with-import-linter.md
+      - ADR-0002 — Validation-loop tool selection: adr/0002-validation-loop-tool-selection.md
+      - ADR-0003 — UnitOfWork commit authority: adr/0003-unit-of-work-commit-authority.md
+      - ADR-0004 — UTC timestamps owned by the domain: adr/0004-utc-timestamps-owned-by-the-domain.md
+      - Template: adr/0000-adr-template.md

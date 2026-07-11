@@ -41,6 +41,9 @@ dev = [
     "commitizen>=4.16.4",
     "httpx>=0.28.1",
 ]
+docs = [
+    "mkdocs-material>=9.5",
+]
 
 [build-system]
 requires = ["hatchling"]
@@ -182,6 +185,9 @@ db-downgrade = "alembic downgrade -1"
 # PATH (`brew install squawk` / `cargo install squawk-cli` / `npm i -g squawk-cli`). The dummy
 # URL is only used to pick the Postgres dialect for offline SQL rendering — no DB is contacted.
 migration-lint.shell = "APP_DATABASE_URL=${APP_DATABASE_URL:-postgresql+asyncpg://u:u@localhost:5432/db} alembic upgrade base:head --sql | squawk /dev/stdin"
+# Docs site (MkDocs Material). Needs the `docs` dependency group: `uv sync --group docs`.
+docs-serve = "mkdocs serve"
+docs-build = "mkdocs build --strict"
 
 [tool.importlinter]
 root_packages = ["app"]

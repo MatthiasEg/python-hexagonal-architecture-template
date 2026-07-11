@@ -31,3 +31,4 @@ coverage.xml
 
 # Mac files
 .DS_Store
+site/
