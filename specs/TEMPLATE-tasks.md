@@ -3,7 +3,7 @@
 Ordered so each task depends only on the ones above it, domain-outward (see
 `docs/adding-a-feature.md`). Each task is small enough to finish and verify on its own.
 
-- [ ] 1. Domain — entity + rules + unit test
+- [ ] 1. Domain: entity + rules + unit test
 - [ ] 2. Output port + in-memory fake + contract test
 - [ ] 3. Input ports
 - [ ] 4. Use cases + unit tests (in-memory repo, no mocks)

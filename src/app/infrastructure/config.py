@@ -44,7 +44,7 @@ class Settings(BaseSettings):
     debug: bool = False
 
     # --- Server ---
-    host: str = "0.0.0.0"  # noqa: S104 — bind all interfaces (containers); override via APP_HOST
+    host: str = "0.0.0.0"  # noqa: S104  # binds all interfaces in containers; override via APP_HOST
     port: int = 8000
 
     # --- Logging ---

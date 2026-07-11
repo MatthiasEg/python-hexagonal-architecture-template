@@ -1,4 +1,4 @@
-"""Domain entities — pure business objects with no infrastructure dependencies."""
+"""Domain entities: pure business objects with no infrastructure dependencies."""
 
 from abc import ABC
 from datetime import UTC, datetime

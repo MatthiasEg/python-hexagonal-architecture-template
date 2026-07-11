@@ -10,8 +10,8 @@ run `uv run poe check`.
 ## What is the difference between ports and adapters here?
 
 A **port** is an interface owned by the application: `ports/input/` are driving ports (what the
-app can do, called by controllers), `ports/output/` are driven ports (what the app needs — a
-repository, a unit of work, a logger). An **adapter** is a concrete implementation in
+app can do, called by controllers), `ports/output/` are driven ports (what the app needs, such
+as a repository, a unit of work, or a logger). An **adapter** is a concrete implementation in
 `infrastructure/`: `PostgresTaskRepository` is an adapter for the `TaskRepository` output port.
 The application depends on the port; the adapter is wired in at the edge.
 
@@ -38,19 +38,19 @@ touching business logic.
 ## Can an AI agent really add a feature on its own?
 
 That is the design goal. Give the agent `AGENTS.md` and `docs/adding-a-feature.md`, and it
-mirrors the `Task` slice from the domain outward, then closes `uv run poe check` — a
-deterministic command — until it is green. The determinism is what makes unattended
+mirrors the `Task` slice from the domain outward, then closes `uv run poe check`, a
+deterministic command, until it is green. The determinism is what makes unattended
 verification possible; see [Agent-native](agent-native.md).
 
 ## Why is the coverage floor only 80%?
 
-It is a floor, not a target — the gate that fails CI, set where it catches real regressions
+It is a floor, not a target: the gate that fails CI, set where it catches real regressions
 without forcing tests for trivial glue. The `Task` slice itself is covered far above that.
 Raise `fail_under` in `pyproject.toml` if your project warrants a stricter floor.
 
 ## How do I change the architecture rules?
 
 Deliberately, in one commit, with an ADR. The contracts live in `pyproject.toml` under
-`[tool.importlinter]`. If you are relaxing a boundary, write down why in `docs/adr/` first —
-the rejected-alternatives section is what stops the decision being undone later by someone who
+`[tool.importlinter]`. If you are relaxing a boundary, write down why in `docs/adr/` first.
+The rejected-alternatives section is what stops the decision being undone later by someone who
 never saw the tradeoff.

@@ -1,7 +1,16 @@
-# Squawk — Postgres migration linter (https://squawkhq.com).
+# Squawk, the Postgres migration linter (https://squawkhq.com).
 # Run via `uv run poe migration-lint` (needs the `squawk` binary on PATH).
 # It flags DDL that can take prod-locking `ACCESS EXCLUSIVE` locks (e.g. adding a
 # NOT NULL column with no default, non-CONCURRENT index creation, unsafe type changes).
-[squawk]
+#
+# Config keys are top-level (Squawk does not use a [squawk] table).
+
 pg_version = "17.0"
-# excluded_rules = []  # start strict; add exclusions here with a justification if needed
+
+# prefer-text-field wants `text` + a CHECK constraint instead of `varchar(n)`. Its rationale,
+# that shrinking a varchar takes an ACCESS EXCLUSIVE lock, is real but narrow: since Postgres 9.2,
+# *increasing* a varchar length is metadata-only. We keep `String(n)` because a bounded column
+# is a clear, self-documenting domain constraint that pairs with the DTO's `max_length`. The
+# genuinely dangerous operations this gate exists for (unsafe NOT NULL adds, non-CONCURRENT
+# indexes, destructive type changes) stay enabled.
+excluded_rules = ["prefer-text-field"]

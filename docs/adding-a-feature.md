@@ -1,7 +1,7 @@
 # Adding a feature
 
 This is the worked runbook an agent (or a human) follows to add a resource. It mirrors the
-`Task` slice — the canonical example in the repo — building from the domain outward so every
+`Task` slice, the canonical example in the repo, building from the domain outward so every
 layer compiles against the one beneath it. Substitute your resource name for `Task`
 throughout.
 
@@ -24,10 +24,10 @@ src/app/infrastructure/web/controllers/  # 7. router
 tests/                                    # tests at each layer as you go
 ```
 
-## 1. Domain — the entity and its rules
+## 1. Domain: the entity and its rules
 
 `src/app/domain/note.py`. Extend `Entity` (gives you `id`, `created_at`, `updated_at`,
-immutability, and `with_updated_at()`). Encode behavior and invariants here — a state machine,
+immutability, and `with_updated_at()`). Encode behavior and invariants here: a state machine,
 a validation rule, a computed property. Keep it pure: no imports outside `app.domain`.
 
 Model the `Task` slice: `src/app/domain/task.py` shows a `StrEnum` status with an explicit
@@ -38,40 +38,40 @@ existing `DomainError` / `ValidationError` / `EntityNotFoundError`).
 Test first: `tests/unit/domain/test_note.py`. Assert the legal operations and that each
 illegal one raises. No mocks, no I/O.
 
-## 2. Output port — what the application needs
+## 2. Output port: what the application needs
 
 `src/app/application/ports/output/note_repository.py`. Define the persistence contract the use
 cases depend on, e.g. `save`, `get_by_id`, `list_all`. Mirror
-`ports/output/task_repository.py`. This is an abstract contract (ABC) — infrastructure
+`ports/output/task_repository.py`. This is an abstract contract (ABC): infrastructure
 implements it; the application never imports the concrete adapter.
 
 Provide a test double now: `tests/support/in_memory_note_repository.py`, a dict-backed
 implementation of the port. Add a contract test
 (`tests/unit/application/test_note_repository_contract.py`) asserting both the in-memory and
-Postgres adapters satisfy the port — this is what keeps the swappable-adapter promise honest.
+Postgres adapters satisfy the port. That test is what keeps the swappable-adapter promise honest.
 
-## 3. Input ports — what the application can do
+## 3. Input ports: what the application can do
 
 `src/app/application/ports/input/note_ports.py`. One abstract use-case class per operation
 (`CreateNoteUseCase`, `GetNoteUseCase`, …), each with an `async def execute(...)`. Mirror
 `ports/input/task_ports.py`. Controllers depend on these abstractions, not on the concrete use
 cases.
 
-## 4. Use cases — orchestration
+## 4. Use cases: orchestration
 
 `src/app/application/use_cases/note_use_cases.py`. Implement each input port. A use case
 orchestrates domain objects through the output ports and does nothing framework-specific.
 
-Mutating use cases (create, update, transition) take three driven ports —
-`(repository, uow, logger)` — and call `await uow.commit()` explicitly after the write, then
+Mutating use cases (create, update, transition) take three driven ports,
+`(repository, uow, logger)`, and call `await uow.commit()` explicitly after the write, then
 log. Read use cases take only the repository. Copy the shape from
 `use_cases/task_use_cases.py`. Raise `EntityNotFoundError` when a lookup misses.
 
 Unit-test each use case with the in-memory repository and the fakes in `tests/support/`
-(`fake_unit_of_work.py`, `fake_logger.py`) — zero mocks. See
+(`fake_unit_of_work.py`, `fake_logger.py`), with zero mocks. See
 `tests/unit/application/test_task_use_cases.py`.
 
-## 5. Persistence — model and migration
+## 5. Persistence: model and migration
 
 `src/app/infrastructure/db/models/note.py`. The SQLAlchemy model, mapping the entity to the
 `notes` table. Mirror `db/models/task.py`. Match column limits to what the domain allows
@@ -80,22 +80,22 @@ Unit-test each use case with the in-memory repository and the fakes in `tests/su
 Generate the migration with the `add-migration` skill (or `uv run poe db-revision -m "add
 notes"`), **read the generated DDL**, then lint it with `uv run poe migration-lint`.
 
-## 6. Repository adapter — the driven side
+## 6. Repository adapter: the driven side
 
 `src/app/infrastructure/db/repositories/note_repository.py`. `PostgresNoteRepository`
 implements the output port against an `AsyncSession`. It maps rows to domain entities and back;
-it does **not** commit — the `UnitOfWork` owns commits. Mirror
+it does **not** commit; the `UnitOfWork` owns commits. Mirror
 `db/repositories/task_repository.py`.
 
 Integration test: `tests/integration/db/test_note_repository.py`, against real Postgres via
 testcontainers.
 
-## 7. API edge — DTOs and controller
+## 7. API edge: DTOs and controller
 
 `src/app/infrastructure/web/schemas/note.py`. Request/response Pydantic DTOs with explicit
 `from_domain()` mapping. **Bound the fields to the DB column limits** (`Field(min_length=1,
 max_length=200)`), so oversized input is rejected at the edge with a 422 instead of failing in
-the database with a 500 — schemathesis will catch you if you forget.
+the database with a 500; schemathesis will catch you if you forget.
 
 `src/app/infrastructure/web/controllers/note.py`. An `APIRouter` wiring HTTP to the use cases.
 The controller constructs the adapter, unit of work, and logger via FastAPI `Depends` and calls
@@ -111,13 +111,13 @@ uv run poe check
 ```
 
 Iterate (see the `check-fix` skill) until every stage is green and coverage stays above the
-floor. Then commit — one Conventional Commit per layer reads well in history, or one
+floor. Then commit: one Conventional Commit per layer reads well in history, or one
 `feat: add Note resource` if you prefer a single commit.
 
 ## Why this order
 
 Building domain-first means the compiler and the unit tests validate your design before you
 write a line of SQL or HTTP. If you find yourself wanting the domain to import a database
-session or an HTTP client, stop — the dependency is backwards. Define an output port and push
+session or an HTTP client, stop: the dependency is backwards. Define an output port and push
 the concrete dependency out to `infrastructure/`. That inversion is the whole point of the
 architecture, and `uv run poe arch` will fail the build if you skip it.

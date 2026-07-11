@@ -1,4 +1,4 @@
-"""Application entrypoint — configure logging first, run migrations, then start uvicorn.
+"""Application entrypoint: configure logging first, run migrations, then start uvicorn.
 
 Running everything from a single Python entrypoint lets us install the loguru
 intercept handler *before* any library (uvicorn reloader, alembic) emits log

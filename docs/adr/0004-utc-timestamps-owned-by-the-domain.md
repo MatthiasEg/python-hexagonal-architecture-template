@@ -17,8 +17,8 @@ The domain `Entity` base class owns timestamps, in UTC:
 
 - `created_at` and `updated_at` default to `datetime.now(UTC)` via field factories.
 - Mutations produce a new entity through `with_updated_at()` (entities are frozen/immutable), so
-  `updated_at` advances as part of the domain operation — e.g. `Task.transition_to()` refreshes
-  it.
+  `updated_at` advances as part of the domain operation; `Task.transition_to()`, for example,
+  refreshes it.
 - Timestamps are always timezone-aware UTC. Display-timezone conversion is a presentation
   concern, not a storage one.
 
@@ -36,8 +36,8 @@ The domain `Entity` base class owns timestamps, in UTC:
 
 ## Consequences
 
-- Entities are fully valid and testable in memory, with meaningful timestamps, no database
-  required — which is what lets the use-case unit tests run with zero mocks.
+- Entities are fully valid and testable in memory, with meaningful timestamps and no database
+  required, which is what lets the use-case unit tests run with zero mocks.
 - All adapters agree on timestamp semantics because they come from one place.
 - The tradeoff: timestamps come from application wall-clock, not a single database clock, so
   they are not guaranteed monotonic across hosts with skewed clocks. For audit-grade ordering

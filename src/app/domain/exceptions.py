@@ -1,4 +1,4 @@
-"""Domain exceptions — pure business-level error hierarchy.
+"""Domain exceptions: the pure business-level error hierarchy.
 
 All exception types represent domain-level failure categories that are
 independent of infrastructure technology choices.

@@ -7,7 +7,7 @@ from app.domain.task import Task
 
 
 class InMemoryTaskRepository(TaskRepository):
-    """Stores Task aggregates in a dict — a drop-in for the Postgres adapter."""
+    """Stores Task aggregates in a dict as a drop-in for the Postgres adapter."""
 
     def __init__(self) -> None:
         self._store: dict[UUID, Task] = {}

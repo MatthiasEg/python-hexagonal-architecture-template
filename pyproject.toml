@@ -1,7 +1,7 @@
 [project]
 name = "fastapi-hexagonal-template"
 version = "0.1.0"
-description = "Production-grade hexagonal-architecture FastAPI template — layer boundaries enforced in CI, built for AI coding agents."
+description = "Production-grade hexagonal-architecture FastAPI template with layer boundaries enforced in CI, built for AI coding agents."
 authors = [
     {name = "Matthias Egli", email = "matthiasegli93@gmail.com"},
 ]
@@ -88,7 +88,7 @@ ignore = [
 [tool.ruff.lint.per-file-ignores]
 # Tests: magic values, asserts, and docstrings are expected/idiomatic.
 "tests/**" = ["PLR2004", "S101", "D"]
-# Alembic scaffolding is generated/boilerplate — don't require docstrings.
+# Alembic scaffolding is generated boilerplate, so it does not require docstrings.
 "src/app/infrastructure/db/migrations/env.py" = ["D"]
 "src/app/infrastructure/db/migrations/versions/**" = ["D"]
 
@@ -119,7 +119,7 @@ filterwarnings = [
     # Starlette's TestClient still imports httpx<2 and warns about it.
     "ignore:Using .httpx. with .starlette.testclient. is deprecated",
     # Schemathesis' in-process ASGI transport leaves anyio memory streams for the GC,
-    # which surface as ResourceWarnings during teardown — harmless test-transport noise.
+    # which surface as ResourceWarnings during teardown; harmless test-transport noise.
     "ignore::ResourceWarning",
     "ignore::pytest.PytestUnraisableExceptionWarning",
 ]
@@ -183,7 +183,7 @@ db-revision = "alembic revision --autogenerate"
 db-downgrade = "alembic downgrade -1"
 # Lint the DDL migrations would emit for prod lock-safety. Requires the `squawk` binary on
 # PATH (`brew install squawk` / `cargo install squawk-cli` / `npm i -g squawk-cli`). The dummy
-# URL is only used to pick the Postgres dialect for offline SQL rendering — no DB is contacted.
+# URL is only used to pick the Postgres dialect for offline SQL rendering; no DB is contacted.
 migration-lint.shell = "APP_DATABASE_URL=${APP_DATABASE_URL:-postgresql+asyncpg://u:u@localhost:5432/db} alembic upgrade base:head --sql | squawk /dev/stdin"
 # Docs site (MkDocs Material). Needs the `docs` dependency group: `uv sync --group docs`.
 docs-serve = "mkdocs serve"

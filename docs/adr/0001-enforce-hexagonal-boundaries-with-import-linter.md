@@ -5,7 +5,7 @@
 
 ## Context
 
-Hexagonal architecture only pays off if the dependency rule — imports point inward only —
+Hexagonal architecture only pays off if the dependency rule (imports point inward only)
 actually holds. In practice it erodes: someone imports `SQLAlchemy` into a use case "just for
 this one query", a domain model grows a `fastapi` import for a validation helper, and within a
 few months the "clean" architecture is a three-tier app with extra folders. Convention and
@@ -31,8 +31,8 @@ Any violation fails the build.
 ## Alternatives considered
 
 - **Folder conventions + code review only** (what most "clean architecture" example repos do,
-  e.g. `fastapi-clean-example`). Free, but unenforced — it degrades exactly when the team is
-  moving fast, which is when you need it. Rejected: an unenforced boundary is a comment.
+  e.g. `fastapi-clean-example`). Free, but unenforced: it degrades exactly when the team is
+  moving fast, which is when you need it. Rejected, because an unenforced boundary is a comment.
 - **`ruff` custom rules / `flake8-import-restrictions`.** Ruff has no first-class layered-
   architecture contract, and the import-restriction plugins are less expressive than
   import-linter's layered + forbidden contract model. Rejected on expressiveness.
@@ -46,4 +46,4 @@ Any violation fails the build.
 - Contributors must invert dependencies properly (define an output port, implement it in
   infrastructure) instead of reaching across a layer. That is the intended friction.
 - The forbidden-module lists need updating when a genuinely new infrastructure library is
-  added — a small, deliberate maintenance cost, and a useful checkpoint.
+  added: a small, deliberate maintenance cost, and a useful checkpoint.

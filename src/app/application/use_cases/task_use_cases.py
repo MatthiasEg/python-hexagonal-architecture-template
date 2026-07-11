@@ -2,7 +2,7 @@
 
 Mutating use cases depend on three driven ports: a ``TaskRepository`` for
 persistence, a ``UnitOfWork`` for the transactional boundary, and a
-``LoggerPort`` for structured logging — none of which couple the application
+``LoggerPort`` for structured logging, none of which couple the application
 layer to a concrete framework.
 """
 

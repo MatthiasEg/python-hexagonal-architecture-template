@@ -58,7 +58,7 @@ async def unhandled_exception_handler(request: Request, exc: Exception) -> JSONR
 
 def register_exception_handlers(app: FastAPI) -> None:
     """Register all exception handlers on the app."""
-    # More specific handlers first — FastAPI matches most-specific exception type
+    # More specific handlers first, since FastAPI matches the most-specific exception type
     app.add_exception_handler(EntityNotFoundError, entity_not_found_handler)
     app.add_exception_handler(ValidationError, validation_error_handler)
     app.add_exception_handler(DomainError, domain_error_handler)

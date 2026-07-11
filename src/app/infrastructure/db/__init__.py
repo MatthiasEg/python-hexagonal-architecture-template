@@ -1,4 +1,4 @@
-"""Database infrastructure — engine, base model, and session management."""
+"""Database infrastructure: engine, base model, and session management."""
 
 from app.infrastructure.db.base import Base, TimestampMixin
 from app.infrastructure.db.dependencies import get_db_session

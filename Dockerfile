@@ -41,7 +41,7 @@ ARG BUILD_DATE
 ARG VCS_REF
 
 LABEL org.opencontainers.image.title="fastapi-hexagonal-template" \
-      org.opencontainers.image.description="Production-grade hexagonal-architecture FastAPI template — enforced in CI, built for AI coding agents." \
+      org.opencontainers.image.description="Production-grade hexagonal-architecture FastAPI template with layer boundaries enforced in CI, built for AI coding agents." \
       org.opencontainers.image.version="0.1.0" \
       org.opencontainers.image.created="${BUILD_DATE}" \
       org.opencontainers.image.revision="${VCS_REF}"

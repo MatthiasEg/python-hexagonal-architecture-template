@@ -19,11 +19,11 @@ The authoritative rules live in `AGENTS.md` at the repo root. Follow it. Summary
   libraries here.
 - `src/app/infrastructure/` holds every concrete technology and implements the output ports.
 - The boundary is enforced by import-linter (`uv run poe arch`). Do not break it to make
-  code compile — invert the dependency with an output port instead.
+  code compile; invert the dependency with an output port instead.
 
 # Definition of done
 
-A change is complete only when `uv run poe check` is green (ruff → ty → import-linter →
-deptry → pip-audit → pytest+coverage+schemathesis). Mirror the `Task` slice for new
+A change is complete only when `uv run poe check` is green (ruff, then ty, import-linter,
+deptry, pip-audit, and pytest+coverage+schemathesis). Mirror the `Task` slice for new
 features; see `docs/adding-a-feature.md`. Conventional Commits; Google-style docstrings;
 line length 120; type hints on everything.

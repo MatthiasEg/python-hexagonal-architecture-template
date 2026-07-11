@@ -16,7 +16,7 @@ and do not belong in the tool-agnostic `AGENTS.md`.
   with Squawk. Prefer these over ad-hoc steps.
 - **Hooks** (`.claude/settings.json`): a `PostToolUse` hook runs `ruff format` and
   `ruff check --fix` on any Python file you edit, so formatting is applied automatically
-  after each edit — you do not need to think about it.
+  after each edit, so you do not need to think about it.
 - **Permissions**: the allowlist pre-approves `uv run poe *`, `uv run pytest *`, read-only
   git, and common read tooling. Anything outside it will prompt.
 - After a feature, run `uv run poe check` and do not report the work as complete until it is

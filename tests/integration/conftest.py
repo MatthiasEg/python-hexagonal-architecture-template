@@ -1,8 +1,8 @@
 """Integration test fixtures.
 
 Postgres is provided in two ways:
-- **CI:** ``APP_DATABASE_URL`` is pre-set by a Postgres service container —
-  no Docker daemon needed in the test runner.
+- **CI:** ``APP_DATABASE_URL`` is pre-set by a Postgres service container, so
+  no Docker daemon is needed in the test runner.
 - **Local dev:** when the env var is absent, testcontainers spins up a
   Postgres container automatically (requires a running Docker daemon).
 """

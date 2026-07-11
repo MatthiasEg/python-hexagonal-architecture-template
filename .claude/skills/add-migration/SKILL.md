@@ -1,6 +1,6 @@
 ---
 name: add-migration
-description: Use when a SQLAlchemy model changed and the schema needs a new Alembic revision — autogenerate it, review the DDL by hand, and lock-safety-lint it with Squawk.
+description: Use when a SQLAlchemy model changed and the schema needs a new Alembic revision. Autogenerate it, review the DDL by hand, and lock-safety-lint it with Squawk.
 ---
 
 # Add a database migration

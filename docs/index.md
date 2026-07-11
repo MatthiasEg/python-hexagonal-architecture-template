@@ -1,24 +1,24 @@
 # FastAPI Hexagonal Template
 
-Production-grade hexagonal-architecture FastAPI template — layer boundaries enforced in CI,
+Production-grade hexagonal-architecture FastAPI template with layer boundaries enforced in CI,
 built for AI coding agents.
 
 Most "clean" or "hexagonal" FastAPI templates draw three layers in a diagram and then let the
 domain import the ORM anyway. Here the import direction is a build gate: `uv run poe arch`
 fails if any inner layer reaches outward, so the architecture cannot rot silently. The same
-discipline makes the codebase legible to AI coding agents — a fixed structure, a canonical
+discipline makes the codebase legible to AI coding agents: a fixed structure, a canonical
 example to mirror, and one deterministic command that defines "done".
 
-- **[Architecture](architecture.md)** — the three layers, the inward-only rule, and how it is
+- **[Architecture](architecture.md)**: the three layers, the inward-only rule, and how it is
   enforced.
-- **[Adding a feature](adding-a-feature.md)** — the domain-outward runbook, mirroring the
+- **[Adding a feature](adding-a-feature.md)**: the domain-outward runbook, mirroring the
   `Task` slice.
-- **[Validation loop](validation-loop.md)** — the one command, what each tool catches, and
+- **[Validation loop](validation-loop.md)**: the one command, what each tool catches, and
   why these and not others.
-- **[Agent-native](agent-native.md)** — `AGENTS.md`, the `.claude/` assets, and the
+- **[Agent-native](agent-native.md)**: `AGENTS.md`, the `.claude/` assets, and the
   determinism contract.
-- **[Comparison](comparison.md)** — how this differs from the popular FastAPI templates.
-- **[FAQ](faq.md)** — the questions people actually ask.
+- **[Comparison](comparison.md)**: how this differs from the popular FastAPI templates.
+- **[FAQ](faq.md)**: the questions people actually ask.
 
 ## Quickstart
 

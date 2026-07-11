@@ -17,7 +17,7 @@ if TYPE_CHECKING:
 # Loggers whose access logs are covered by RequestLoggingMiddleware (suppressed to avoid duplicates)
 _SUPPRESSED_LOGGERS = ("uvicorn.access",)
 
-# Loggers that configure their own handlers and disable propagation — must be overridden explicitly
+# Loggers that configure their own handlers and disable propagation; these must be overridden explicitly
 _INTERCEPTED_LOGGERS = ("uvicorn", "uvicorn.error", "uvicorn.access", "alembic")
 
 

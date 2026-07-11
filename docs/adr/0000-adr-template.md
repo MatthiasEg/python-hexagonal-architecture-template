@@ -5,7 +5,7 @@
 
 ## Context
 
-What forces are at play — technical, product, team? What makes this decision necessary now?
+What forces are at play (technical, product, team)? What makes this decision necessary now?
 State the problem, not the solution.
 
 ## Decision
@@ -15,7 +15,7 @@ The choice, stated plainly in the active voice: "We will …". Include the concr
 
 ## Alternatives considered
 
-Each realistic option and why it was rejected. This is the most valuable section — it stops
+Each realistic option and why it was rejected. This is the most valuable section: it stops
 the decision being silently re-litigated later.
 
 ## Consequences

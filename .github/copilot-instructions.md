@@ -5,7 +5,7 @@ first and follow it. Key points, in short:
 
 - Hexagonal architecture. Imports point inward only:
   `infrastructure/ → application/ → domain/`. `domain/` imports no frameworks. The boundary
-  is enforced by import-linter (`uv run poe arch`) — do not violate it to make code compile;
+  is enforced by import-linter (`uv run poe arch`). Do not violate it to make code compile;
   fix the dependency direction instead.
 - Mirror the `Task` slice when adding a feature. Follow `docs/adding-a-feature.md`.
 - A change is done only when `uv run poe check` is green.
