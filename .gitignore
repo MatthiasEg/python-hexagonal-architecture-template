@@ -1,0 +1,33 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+
+# Environment files (keep .env.example)
+.env
+.env.local
+.env.*.local
+
+# Coverage
+htmlcov/
+coverage.xml
+.coverage
+
+# Protocol output
+/output/
+
+# IDEs
+.idea/
+.vscode/
+
+# CI build artifacts
+.docker-certs/
+
+# Mac files
+.DS_Store

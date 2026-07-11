@@ -1,0 +1,7 @@
+# Squawk — Postgres migration linter (https://squawkhq.com).
+# Run via `uv run poe migration-lint` (needs the `squawk` binary on PATH).
+# It flags DDL that can take prod-locking `ACCESS EXCLUSIVE` locks (e.g. adding a
+# NOT NULL column with no default, non-CONCURRENT index creation, unsafe type changes).
+[squawk]
+pg_version = "17.0"
+# excluded_rules = []  # start strict; add exclusions here with a justification if needed

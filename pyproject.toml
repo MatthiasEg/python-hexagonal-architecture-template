@@ -1,0 +1,229 @@
+[project]
+name = "fastapi-hexagonal-template"
+version = "0.1.0"
+description = "Production-grade hexagonal-architecture FastAPI template — layer boundaries enforced in CI, built for AI coding agents."
+authors = [
+    {name = "Matthias Egli", email = "matthiasegli93@gmail.com"},
+]
+requires-python = ">=3.13"
+dependencies = [
+    "fastapi>=0.128.0",
+    "uvicorn[standard]>=0.40.0",
+    "pydantic[email]>=2.12.5",
+    "pydantic-settings>=2.12.0",
+    "loguru>=0.7.3",
+    "opentelemetry-api>=1.39.1",
+    "opentelemetry-sdk>=1.39.1",
+    "opentelemetry-instrumentation-fastapi>=0.60b1",
+    "sqlalchemy[asyncio]>=2.0.36",
+    "asyncpg>=0.30.0",
+    "alembic>=1.14.0",
+    "starlette>=0.50.0",
+]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.14.14",
+    "ty>=0.0.14",
+    "pytest>=9.0.2",
+    "pytest-asyncio>=1.3.0",
+    "pytest-cov>=7.0.0",
+    "poethepoet>=0.40.0",
+    "import-linter>=2.9",
+    "pre-commit>=4.5.1",
+    "testcontainers[postgres]>=4.14.1",
+    "psycopg2-binary>=2.9.11",
+    "deptry>=0.25.1",
+    "pip-audit>=2.10.1",
+    "pytest-xdist>=3.8.0",
+    "pytest-randomly>=4.1.0",
+    "schemathesis>=4.22.3",
+    "commitizen>=4.16.4",
+    "httpx>=0.28.1",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/app"]
+
+[tool.ruff]
+target-version = "py313"
+line-length = 120
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = [
+    "E",      # pycodestyle errors
+    "W",      # pycodestyle warnings
+    "F",      # Pyflakes
+    "I",      # isort
+    "B",      # flake8-bugbear
+    "C4",     # flake8-comprehensions
+    "C90",    # mccabe complexity
+    "UP",     # pyupgrade
+    "ARG",    # flake8-unused-arguments
+    "SIM",    # flake8-simplify
+    "TCH",    # flake8-type-checking
+    "PTH",    # flake8-use-pathlib
+    "ERA",    # eradicate
+    "PL",     # Pylint
+    "S",      # flake8-bandit (security)
+    "D",      # pydocstyle (docstrings)
+    "RUF",    # Ruff-specific rules
+]
+ignore = [
+    "PLR0913",  # Too many arguments
+    "D104",     # Missing docstring in public package (empty __init__ markers)
+    "D105",     # Missing docstring in magic method
+    "D107",     # Missing docstring in __init__ (documented at class level)
+    "D102",     # Missing docstring in public method (ports document their contracts)
+]
+
+[tool.ruff.lint.per-file-ignores]
+# Tests: magic values, asserts, and docstrings are expected/idiomatic.
+"tests/**" = ["PLR2004", "S101", "D"]
+# Alembic scaffolding is generated/boilerplate — don't require docstrings.
+"src/app/infrastructure/db/migrations/env.py" = ["D"]
+"src/app/infrastructure/db/migrations/versions/**" = ["D"]
+
+[tool.ruff.lint.mccabe]
+max-complexity = 10
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.lint.isort]
+known-first-party = ["app"]
+
+[tool.deptry]
+# asyncpg is the async Postgres driver, loaded at runtime via the SQLAlchemy DSN
+# (postgresql+asyncpg://...) rather than imported, so deptry cannot see its use.
+per_rule_ignores = { DEP002 = ["asyncpg"] }
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+testpaths = ["tests"]
+pythonpath = ["src"]
+addopts = "--strict-markers"
+# Keep test output pristine; treat warnings as errors except third-party deprecations
+# we cannot act on (Starlette's TestClient still uses httpx<2).
+filterwarnings = [
+    "error",
+    # Starlette's TestClient still imports httpx<2 and warns about it.
+    "ignore:Using .httpx. with .starlette.testclient. is deprecated",
+    # Schemathesis' in-process ASGI transport leaves anyio memory streams for the GC,
+    # which surface as ResourceWarnings during teardown — harmless test-transport noise.
+    "ignore::ResourceWarning",
+    "ignore::pytest.PytestUnraisableExceptionWarning",
+]
+
+# ------------------------------------------------------------------------------
+# Coverage
+# ------------------------------------------------------------------------------
+
+[tool.coverage.run]
+source = ["app"]
+branch = true
+omit = [
+    "*/main.py",
+    "*/entrypoint.py",
+    "*/infrastructure/db/migrations/*",
+]
+
+[tool.coverage.report]
+fail_under = 80
+show_missing = true
+skip_empty = true
+exclude_lines = [
+    "pragma: no cover",
+    "if TYPE_CHECKING:",
+    "if __name__ == .__main__.:",
+    "@(abc\\.)?abstractmethod",
+]
+
+[tool.coverage.html]
+directory = "htmlcov"
+
+[tool.commitizen]
+name = "cz_conventional_commits"
+tag_format = "v$version"
+version_scheme = "pep440"
+version_provider = "pep621"
+update_changelog_on_bump = true
+major_version_zero = true
+
+[tool.poe.tasks]
+lint = "ruff check src tests"
+format = "ruff format src tests"
+typecheck = "ty check src"
+deps = "deptry src"
+audit = "pip-audit"
+test = "pytest --cov --cov-report=term-missing"
+test-quick = "pytest --no-cov -q"
+test-parallel = "pytest -n auto --cov --cov-report=term-missing"
+coverage-html = "pytest --cov --cov-report=html --cov-report=term-missing"
+dev = "python -m app.entrypoint"
+arch = "lint-imports"
+# The full validation loop, fail-fast cheapest-first: static → deps → security → tests.
+check = ["lint", "typecheck", "arch", "deps", "audit", "test"]
+install-hooks = "pre-commit install"
+docker-build = "docker build --target development -t fastapi-hexagonal-template:dev ."
+docker-build-prod = "docker build --target production -t fastapi-hexagonal-template ."
+docker-run = "docker run -p 8000:8000 -v ./src:/app/src fastapi-hexagonal-template:dev"
+docker-run-prod = "docker run -p 8000:8000 fastapi-hexagonal-template"
+db-migrate = "alembic upgrade head"
+db-revision = "alembic revision --autogenerate"
+db-downgrade = "alembic downgrade -1"
+# Lint the DDL migrations would emit for prod lock-safety. Requires the `squawk` binary on
+# PATH (`brew install squawk` / `cargo install squawk-cli` / `npm i -g squawk-cli`). The dummy
+# URL is only used to pick the Postgres dialect for offline SQL rendering — no DB is contacted.
+migration-lint.shell = "APP_DATABASE_URL=${APP_DATABASE_URL:-postgresql+asyncpg://u:u@localhost:5432/db} alembic upgrade base:head --sql | squawk /dev/stdin"
+
+[tool.importlinter]
+root_packages = ["app"]
+include_external_packages = true
+
+[[tool.importlinter.contracts]]
+name = "Hexagonal Architecture"
+type = "layers"
+layers = [
+    "app.infrastructure",
+    "app.application",
+    "app.domain",
+]
+
+[[tool.importlinter.contracts]]
+name = "Application layer: no infrastructure libraries"
+type = "forbidden"
+source_modules = ["app.application"]
+forbidden_modules = [
+    "loguru",
+    "sqlalchemy",
+    "fastapi",
+    "httpx",
+    "uvicorn",
+    "pydantic_settings",
+    "alembic",
+    "opentelemetry",
+    "starlette"
+]
+
+[[tool.importlinter.contracts]]
+name = "Domain layer: no infrastructure libraries"
+type = "forbidden"
+source_modules = ["app.domain"]
+forbidden_modules = [
+    "loguru",
+    "sqlalchemy",
+    "fastapi",
+    "httpx",
+    "uvicorn",
+    "pydantic_settings",
+    "alembic",
+    "opentelemetry",
+    "starlette"
+]

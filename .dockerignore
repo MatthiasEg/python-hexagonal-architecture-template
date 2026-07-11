@@ -1,0 +1,53 @@
+# Git
+.git/
+.gitignore
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.import_linter_cache/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Testing
+tests/
+htmlcov/
+.coverage
+coverage.xml
+
+# Documentation
+*.md
+!README.md
+
+# Docker
+Dockerfile
+.dockerignore
+docker-compose.yml
+
+# CI/CD
+.gitlab-ci.yml
+azure-pipelines.yml
+.pre-commit-config.yaml
+
+# AI tooling
+.claude/
+
+# Project files not needed in image
+example_data/
+*.drawio
+.DS_Store
+.python-version
+
+# Environment
+.env
+.env.*
+*.log

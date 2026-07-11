@@ -1,0 +1,30 @@
+"""SQLAlchemy declarative base and common mixins."""
+
+import uuid
+from datetime import datetime
+
+from sqlalchemy import DateTime, Uuid, func
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
+
+
+class Base(DeclarativeBase):
+    """Shared declarative base for all ORM models."""
+
+
+class TimestampMixin:
+    """Mixin providing id, created_at, and updated_at columns matching domain Entity."""
+
+    id: Mapped[uuid.UUID] = mapped_column(
+        Uuid,
+        primary_key=True,
+        default=uuid.uuid4,
+    )
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        server_default=func.now(),
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        server_default=func.now(),
+        onupdate=func.now(),
+    )

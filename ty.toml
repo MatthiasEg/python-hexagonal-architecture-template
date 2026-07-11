@@ -1,0 +1,9 @@
+[environment]
+extra-paths = ["src"]
+python-version = "3.13"
+
+[rules]
+division-by-zero = "warn"
+
+[terminal]
+error-on-warning = true
