@@ -1,0 +1,29 @@
+---
+description: Hexagonal architecture rules and validation loop for this repository
+globs:
+  - "src/**/*.py"
+  - "tests/**/*.py"
+alwaysApply: true
+---
+
+# Architecture rules
+
+The authoritative rules live in `AGENTS.md` at the repo root. Follow it. Summary:
+
+- Hexagonal (ports & adapters). Imports point **inward only**:
+  `infrastructure/ → application/ → domain/`.
+- `src/app/domain/` is pure: no FastAPI, SQLAlchemy, loguru, pydantic-settings, or any
+  `application`/`infrastructure` import. Business-rule violations raise domain exceptions.
+- `src/app/application/` orchestrates domain objects through ports. `ports/input/` = driving
+  contracts; `ports/output/` = driven contracts implemented in `infrastructure/`. No infra
+  libraries here.
+- `src/app/infrastructure/` holds every concrete technology and implements the output ports.
+- The boundary is enforced by import-linter (`uv run poe arch`). Do not break it to make
+  code compile — invert the dependency with an output port instead.
+
+# Definition of done
+
+A change is complete only when `uv run poe check` is green (ruff → ty → import-linter →
+deptry → pip-audit → pytest+coverage+schemathesis). Mirror the `Task` slice for new
+features; see `docs/adding-a-feature.md`. Conventional Commits; Google-style docstrings;
+line length 120; type hints on everything.
