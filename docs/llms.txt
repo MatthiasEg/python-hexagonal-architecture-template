@@ -19,6 +19,7 @@ unenforced), this template enforces the inward-only dependency rule as a build g
 - [Home](index.md): overview and quickstart.
 - [Architecture](architecture.md): the three layers, the inward-only rule, and CI enforcement.
 - [Adding a feature](adding-a-feature.md): domain-outward runbook mirroring the Task slice.
+- [Toolchain](toolchain.md): plain-language map of every tool in the stack and when it runs.
 - [Validation loop](validation-loop.md): the one command, each tool, and determinism.
 - [Agent-native](agent-native.md): AGENTS.md, .claude assets, the determinism contract.
 - [Comparison](comparison.md): versus the popular FastAPI templates, with when-not-to-use.

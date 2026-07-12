@@ -13,6 +13,8 @@ example to mirror, and one deterministic command that defines "done".
   enforced.
 - **[Adding a feature](adding-a-feature.md)**: the domain-outward runbook, mirroring the
   `Task` slice.
+- **[Toolchain](toolchain.md)**: a plain-language map of every tool in the stack, what it does
+  for you, and when it runs.
 - **[Validation loop](validation-loop.md)**: the one command, what each tool catches, and
   why these and not others.
 - **[Agent-native](agent-native.md)**: `AGENTS.md`, the `.claude/` assets, and the
