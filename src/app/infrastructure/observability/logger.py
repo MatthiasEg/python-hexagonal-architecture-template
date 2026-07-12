@@ -12,10 +12,10 @@ from app.application.ports.output.logger import LoggerPort
 class LoguruLogger(LoggerPort):
     """Delegates structured logging to loguru, preserving bound context."""
 
-    def __init__(self, _logger: Any = None) -> None:
+    def __init__(self, _logger: Any = None) -> None:  # noqa: ANN401  # injected loguru logger has no clean public type
         self._logger = _logger or loguru_logger
 
-    def bind(self, **kwargs: Any) -> LoguruLogger:
+    def bind(self, **kwargs: Any) -> LoguruLogger:  # noqa: ANN401  # structured context is arbitrary key-values
         """Return a new adapter with the given key-value pairs bound as context."""
         return LoguruLogger(self._logger.bind(**kwargs))
 

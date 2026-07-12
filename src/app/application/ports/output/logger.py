@@ -14,7 +14,7 @@ class LoggerPort(ABC):
     """
 
     @abstractmethod
-    def bind(self, **kwargs: Any) -> LoggerPort:
+    def bind(self, **kwargs: Any) -> LoggerPort:  # noqa: ANN401  # structured context is arbitrary key-values
         """Return a new logger with the given key-value pairs bound as context."""
         ...
 

@@ -75,6 +75,22 @@ select = [
     "PL",     # Pylint
     "S",      # flake8-bandit (security)
     "D",      # pydocstyle (docstrings)
+    "ANN",    # flake8-annotations (type hints must be present, not just correct)
+    "ASYNC",  # flake8-async (blocking calls inside async def)
+    "DTZ",    # flake8-datetimez (no naive datetimes; pairs with ADR-0004)
+    "FAST",   # FastAPI-specific rules (Annotated deps, redundant response_model)
+    "FBT001", # boolean-trap: boolean positional parameter in a definition
+    "FBT002", # boolean-trap: boolean positional default in a definition
+    "FURB",   # refurb (modernization beyond UP)
+    "ISC",    # implicit string concatenation (a missing comma is usually a bug)
+    "N",      # pep8-naming
+    "PERF",   # perflint (accidentally-quadratic patterns)
+    "PGH",    # pygrep-hooks (bans bare `# noqa` / `# type: ignore`)
+    "PIE",    # flake8-pie (misc antipatterns)
+    "PT",     # flake8-pytest-style
+    "RET",    # flake8-return (flatten needless else-after-return)
+    "SLF",    # flake8-self (private-member access from outside the class)
+    "TRY",    # tryceratops (exception antipatterns)
     "RUF",    # Ruff-specific rules
 ]
 ignore = [
@@ -83,17 +99,21 @@ ignore = [
     "D105",     # Missing docstring in magic method
     "D107",     # Missing docstring in __init__ (documented at class level)
     "D102",     # Missing docstring in public method (ports document their contracts)
+    "TRY003",   # Long messages outside the exception class; our exceptions build their own
 ]
 
 [tool.ruff.lint.per-file-ignores]
-# Tests: magic values, asserts, and docstrings are expected/idiomatic.
-"tests/**" = ["PLR2004", "S101", "D"]
+# Tests: magic values, asserts, docstrings, missing annotations, and private-state
+# inspection are expected/idiomatic.
+"tests/**" = ["PLR2004", "S101", "D", "ANN", "SLF001"]
+# The snapshot regenerator is a dev utility, not part of the package.
+"scripts/**" = ["D", "ANN", "T201"]
 # Alembic scaffolding is generated boilerplate, so it does not require docstrings.
 "src/app/infrastructure/db/migrations/env.py" = ["D"]
 "src/app/infrastructure/db/migrations/versions/**" = ["D"]
 
 [tool.ruff.lint.mccabe]
-max-complexity = 10
+max-complexity = 8
 
 [tool.ruff.lint.pydocstyle]
 convention = "google"
@@ -188,6 +208,8 @@ migration-lint.shell = "APP_DATABASE_URL=${APP_DATABASE_URL:-postgresql+asyncpg:
 # Docs site (MkDocs Material). Needs the `docs` dependency group: `uv sync --group docs`.
 docs-serve = "mkdocs serve"
 docs-build = "mkdocs build --strict"
+# Regenerate the committed OpenAPI snapshot after an intentional API change.
+openapi-snapshot = "python scripts/update_openapi_snapshot.py"
 
 [tool.importlinter]
 root_packages = ["app"]

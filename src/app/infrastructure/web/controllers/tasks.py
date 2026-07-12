@@ -35,7 +35,7 @@ UnitOfWorkDep = Annotated[SqlAlchemyUnitOfWork, Depends(_unit_of_work)]
 LoggerDep = Annotated[LoguruLogger, Depends(_logger)]
 
 
-@router.post("", response_model=TaskResponse, status_code=status.HTTP_201_CREATED)
+@router.post("", status_code=status.HTTP_201_CREATED)
 async def create_task(
     body: TaskCreateRequest, repository: RepositoryDep, uow: UnitOfWorkDep, logger: LoggerDep
 ) -> TaskResponse:
@@ -44,21 +44,21 @@ async def create_task(
     return TaskResponse.from_domain(task)
 
 
-@router.get("/{task_id}", response_model=TaskResponse)
+@router.get("/{task_id}")
 async def get_task(task_id: UUID, repository: RepositoryDep) -> TaskResponse:
     """Fetch a single task by id."""
     task = await GetTask(repository).execute(task_id)
     return TaskResponse.from_domain(task)
 
 
-@router.get("", response_model=list[TaskResponse])
+@router.get("")
 async def list_tasks(repository: RepositoryDep) -> list[TaskResponse]:
     """List all tasks."""
     tasks = await ListTasks(repository).execute()
     return [TaskResponse.from_domain(task) for task in tasks]
 
 
-@router.post("/{task_id}/transition", response_model=TaskResponse)
+@router.post("/{task_id}/transition")
 async def transition_task(
     task_id: UUID, body: TaskTransitionRequest, repository: RepositoryDep, uow: UnitOfWorkDep, logger: LoggerDep
 ) -> TaskResponse:

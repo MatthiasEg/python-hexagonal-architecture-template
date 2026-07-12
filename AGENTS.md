@@ -86,6 +86,7 @@ that mirrors the `Task` slice from the domain outward and ends at a green `uv ru
 | `uv run poe dev` | dev server (uvicorn --reload) |
 | `uv run poe db-revision -m "msg"` | autogenerate an Alembic migration |
 | `uv run poe migration-lint` | Squawk lock-safety lint on migration DDL |
+| `uv run poe openapi-snapshot` | regenerate the committed OpenAPI snapshot after an intentional API change |
 
 ## Constraints (off-limits)
 
