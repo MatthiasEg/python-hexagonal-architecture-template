@@ -40,6 +40,8 @@ dev = [
     "schemathesis>=4.22.3",
     "commitizen>=4.16.4",
     "httpx>=0.28.1",
+    "diff-cover>=10.3.0",
+    "mutmut>=3.6.0",
 ]
 docs = [
     "mkdocs-material>=9.5",
@@ -126,6 +128,17 @@ known-first-party = ["app"]
 # (postgresql+asyncpg://...) rather than imported, so deptry cannot see its use.
 per_rule_ignores = { DEP002 = ["asyncpg"] }
 
+[tool.mutmut]
+# Mutation-test only the business logic (domain + application), which is covered by fast,
+# Docker-free unit tests. Runs nightly (.github/workflows/mutation.yml), not in the inner
+# loop: surviving mutants are a triage signal, not a blocking gate. Coverage % proves lines
+# run; the mutation score proves the tests actually assert.
+source_paths = ["src/app/domain/", "src/app/application/"]
+pytest_add_cli_args_test_selection = ["tests/unit/"]
+# The unit suite imports the infrastructure layer (config, loggers), so it must be present
+# in the mutated copy even though we do not mutate it.
+also_copy = ["src/app/infrastructure/"]
+
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
 asyncio_default_fixture_loop_scope = "function"
@@ -185,12 +198,16 @@ format = "ruff format src tests"
 typecheck = "ty check src"
 deps = "deptry src"
 audit = "pip-audit"
-test = "pytest --cov --cov-report=term-missing"
+test = "pytest --cov --cov-report=term-missing --cov-report=xml"
 test-quick = "pytest --no-cov -q"
 test-parallel = "pytest -n auto --cov --cov-report=term-missing"
 coverage-html = "pytest --cov --cov-report=html --cov-report=term-missing"
 dev = "python -m app.entrypoint"
 arch = "lint-imports"
+# Enforce project conventions that import-linter cannot express (ADR-0003: commit only
+# through the UnitOfWork). Vendored Semgrep rules, pinned; --python 3.13 avoids a protobuf
+# incompatibility on 3.14. Runs in CI and pre-commit, not in the every-run `check`.
+conventions = "uvx --python 3.13 semgrep@1.169.0 --config .semgrep/rules/ --error --quiet src"
 # The full validation loop, fail-fast cheapest-first: static → deps → security → tests.
 check = ["lint", "typecheck", "arch", "deps", "audit", "test"]
 install-hooks = "pre-commit install"

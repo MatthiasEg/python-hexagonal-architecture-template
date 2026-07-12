@@ -41,6 +41,8 @@ jobs:
     steps:
       - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
         with:
+          # Full history so diff-cover can compare a PR against its base branch.
+          fetch-depth: 0
           persist-credentials: false
 
       - name: Install uv
@@ -57,6 +59,35 @@ jobs:
 
       - name: Run the full validation loop
         run: uv run poe check
+
+      # New/changed lines must be tested, independent of the repo-wide coverage floor.
+      - name: Diff coverage (pull requests)
+        if: github.event_name == 'pull_request'
+        env:
+          # Passed through the environment (not interpolated into the script) to avoid
+          # template injection; zizmor enforces this.
+          BASE_REF: ${{ github.base_ref }}
+        run: |
+          git fetch --no-tags origin "$BASE_REF"
+          uv run diff-cover coverage.xml --compare-branch="origin/$BASE_REF" --fail-under=90
+
+  conventions:
+    name: Architecture conventions (Semgrep)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+        with:
+          persist-credentials: false
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@d0cc045d04ccac9d8b7881df0226f9e82c39688e # v6
+        with:
+          version: "0.9.18"
+
+      # ADR-0003: commit only through the UnitOfWork, and other conventions import-linter
+      # cannot express. Python 3.13 avoids a protobuf incompatibility on 3.14.
+      - name: Enforce architecture conventions
+        run: uvx --python 3.13 semgrep@1.169.0 --config .semgrep/rules/ --error --quiet src
 
   migration-safety:
     name: Migration lock-safety (Squawk)

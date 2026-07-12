@@ -1,0 +1,18 @@
+rules:
+  - id: commit-only-through-unit-of-work
+    languages: [python]
+    severity: ERROR
+    message: >-
+      Commit only through the UnitOfWork port. A direct session or connection
+      .commit() bypasses the sole commit authority (ADR-0003) and couples this code
+      to the transaction mechanism. Inject a UnitOfWork and call `await uow.commit()`.
+    # The UnitOfWork implementation is the one place a session commit is allowed.
+    paths:
+      exclude:
+        - "src/app/infrastructure/db/unit_of_work.py"
+    patterns:
+      - pattern: $RECV.commit(...)
+      # Only flag commits on session/connection-like receivers, not `uow.commit()`.
+      - metavariable-regex:
+          metavariable: $RECV
+          regex: (?i).*(session|conn|engine|transaction).*

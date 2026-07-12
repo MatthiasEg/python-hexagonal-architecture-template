@@ -1,0 +1,41 @@
+name: Mutation testing
+
+# Coverage proves lines run; the mutation score proves the tests actually assert. This is a
+# nightly triage signal, not a blocking gate: surviving mutants are a to-do list, not a red
+# build. It mutates only the business logic (domain + application), which the fast, Docker-free
+# unit tests cover.
+on:
+  schedule:
+    - cron: "0 3 * * *" # 03:00 UTC nightly
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  mutmut:
+    name: Mutation score (domain + application)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+        with:
+          persist-credentials: false
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@d0cc045d04ccac9d8b7881df0226f9e82c39688e # v6
+        with:
+          version: "0.9.18"
+          enable-cache: true
+
+      - name: Install Python
+        run: uv python install
+
+      - name: Sync dependencies
+        run: uv sync --frozen
+
+      # Do not fail the job on surviving mutants; this is a report, not a gate.
+      - name: Run mutation tests
+        run: uv run mutmut run || true
+
+      - name: Report results
+        run: uv run mutmut results

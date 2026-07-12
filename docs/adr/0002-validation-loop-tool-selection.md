@@ -48,8 +48,19 @@ Separately (not in the every-run loop): **gitleaks** and **deptry** run as pre-c
 **commitizen** enforces Conventional Commits at commit-msg time, and **Squawk**
 (`uv run poe migration-lint`) lock-safety-lints migration DDL. Run it when migrations change,
 not on every check, because it needs the `squawk` binary and only applies to schema changes.
-In CI, **zizmor** audits the workflow YAML itself (injection, over-broad permissions, unpinned
-actions), and every action is pinned to a commit SHA so a moved tag cannot change what runs.
+A vendored **Semgrep** rule (`uv run poe conventions`, in pre-commit and CI) enforces
+conventions import-linter cannot express, starting with ADR-0003 (commit only through the
+UnitOfWork). It stays out of the every-run loop because it pulls a ~50 MB tool via `uvx`; the
+inner loop stays lean and offline.
+
+In CI: **zizmor** audits the workflow YAML itself (injection, over-broad permissions, unpinned
+actions) and every action is pinned to a commit SHA; **diff-cover** requires new or changed
+lines in a pull request to be 90% covered (a floor of 80% repo-wide lets an agent add untested
+code under the average, which diff coverage catches). Nightly, **mutmut** mutation-tests the
+domain and application layers, because coverage proves lines run while the mutation score
+proves the tests assert; survivors are a triage list, not a gate. **Dependabot** keeps the
+pinned action SHAs and `uv.lock` current, so the audit gates scan a live target rather than a
+frozen one.
 
 ## Alternatives considered and excluded, with reasons
 
@@ -57,8 +68,8 @@ actions), and every action is pinned to a commit SHA so a moved tag cannot chang
 - **radon / xenon**: complexity is covered by ruff `C90` with a `max-complexity` threshold.
 - **vulture as a gate**: high false-positive rate on a template with intentionally-unused
   extension points; noise would train agents to ignore the gate.
-- **mutmut / cosmic-ray (mutation testing)**: valuable but slow; belongs in a nightly job,
-  not the inner loop. Out of scope for v1.
+- **cosmic-ray (mutation testing)**: mutmut covers this need in the nightly job (see below);
+  cosmic-ray's distributed-worker model solves a scale this template does not have.
 - **safety / detect-secrets**: overlap with pip-audit and gitleaks respectively.
 - **SBOM generation, sqlfluff**: SBOM is a release concern (there is no published artifact to
   attest); Squawk already covers migration safety better than sqlfluff, whose SQL-text linting
@@ -74,12 +85,14 @@ baseline (documented here so they are not re-litigated):
   immutable entities that raise typed domain exceptions already are design-by-contract, and
   `ty` + pydantic cover the boundaries. CrossHair is also solver-based and nondeterministic.
 - **generic Semgrep / CodeQL / Snyk SAST**: redundant with ruff `S` + pip-audit + gitleaks at
-  this size. A narrow, hand-written Semgrep rule to enforce a project convention (e.g. "commit
-  only through the UnitOfWork") is worth revisiting, but a generic scanner is noise.
+  this size. Only the narrow, hand-written Semgrep rule was adopted (the convention gate
+  above); the generic registry rulesets are noise and stay out.
 - **Atlas**: replaces Alembic and leans on a cloud service; `alembic check` gives the drift
   gate we wanted without the framework swap.
-- **mutation testing (mutmut) and diff-cover**: genuinely useful, but as a nightly job and a
-  PR-level gate respectively, not the inner loop; a good next step, out of scope here.
+
+The 2026 survey's other recommendations were adopted outside the inner loop rather than
+rejected: the Semgrep convention rule, **diff-cover** (PR gate), **mutmut** (nightly), and
+**Dependabot**, all described in the "Separately" section above.
 
 ## Consequences
 

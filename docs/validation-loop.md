@@ -66,6 +66,16 @@ Some checks are valuable but do not belong in the inner loop:
 - **zizmor** audits the GitHub Actions workflows themselves for injection, over-broad
   permissions, and unpinned actions. It runs in CI, where every action is also pinned to a
   commit SHA so a moved tag cannot silently change what the pipeline runs.
+- A vendored **Semgrep** rule (`uv run poe conventions`) enforces conventions import-linter
+  cannot express, starting with ADR-0003 (commit only through the UnitOfWork). It runs in
+  pre-commit and CI, kept out of the every-run loop so that loop stays lean and offline.
+- **diff-cover** requires new or changed lines in a pull request to be 90% covered, catching
+  untested code that hides under the 80% repo-wide floor.
+- **mutmut** mutation-tests the domain and application layers nightly: coverage proves lines
+  run, the mutation score proves the tests assert. Survivors are a triage list, not a gate.
+- **Dependabot** keeps the pinned action SHAs and `uv.lock` current, so the audit gates scan a
+  live target rather than a frozen one.
 
 CI (`.github/workflows/ci.yml`) runs the full `uv run poe check` against a Postgres service,
-plus the gitleaks, migration-safety, and workflow-security (zizmor) jobs.
+plus the conventions (Semgrep), gitleaks, migration-safety, and workflow-security (zizmor)
+jobs, and diff coverage on pull requests. A separate nightly workflow runs mutation testing.

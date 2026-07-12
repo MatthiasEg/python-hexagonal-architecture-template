@@ -1,0 +1,27 @@
+version: 2
+updates:
+  # Python dependencies (uv). Grouped into one PR per run to keep review light; every PR
+  # still goes through the full `poe check` in CI before it can merge.
+  - package-ecosystem: "uv"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+    groups:
+      python:
+        patterns: ["*"]
+
+  # GitHub Actions. Keeps the SHA-pinned actions current (a pin without updates goes stale).
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    groups:
+      actions:
+        patterns: ["*"]
+
+  # Base image in the Dockerfile.
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "weekly"

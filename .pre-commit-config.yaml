@@ -27,6 +27,13 @@ repos:
         language: system
         pass_filenames: false
 
+      - id: conventions
+        name: architecture conventions (semgrep)
+        entry: uv run poe conventions
+        language: system
+        pass_filenames: false
+        files: ^src/.*\.py$
+
   - repo: https://github.com/gitleaks/gitleaks
     rev: v8.21.2
     hooks:
