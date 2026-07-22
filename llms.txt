@@ -1,0 +1,37 @@
+# FastAPI Hexagonal Template
+
+> Production-grade hexagonal-architecture (ports & adapters) FastAPI template where the layer
+> boundaries are enforced in CI by import-linter, not merely drawn in a diagram, and built so
+> AI coding agents can one-shot features and self-verify against one deterministic command.
+
+Python 3.13, FastAPI, uv, async SQLAlchemy 2.0 + asyncpg, Alembic, Postgres, pydantic v2,
+loguru, OpenTelemetry. The `Task` resource is the canonical vertical slice to copy. The
+definition of done is `uv run poe check` (ruff → ty → import-linter → deptry → pip-audit →
+pytest with coverage and schemathesis), which is deterministic: pinned versions, seeded test
+order, derandomized fuzzing.
+
+Key differentiator: unlike full-stack-fastapi-template (not hexagonal, ORM-coupled),
+fastapi-best-practices (a guide), and fastapi-clean-example (clean but folder-convention only,
+unenforced), this template enforces the inward-only dependency rule as a build gate.
+
+## Docs
+
+- [Home](index.md): overview and quickstart.
+- [Architecture](architecture.md): the three layers, the inward-only rule, and CI enforcement.
+- [Adding a feature](adding-a-feature.md): domain-outward runbook mirroring the Task slice.
+- [Toolchain](toolchain.md): plain-language map of every tool in the stack and when it runs.
+- [Validation loop](validation-loop.md): the one command, each tool, and determinism.
+- [Agent-native](agent-native.md): AGENTS.md, .claude assets, the determinism contract.
+- [Comparison](comparison.md): versus the popular FastAPI templates, with when-not-to-use.
+- [FAQ](faq.md): common questions about ports/adapters, uv, Docker, auth, agents.
+
+## Decision records
+
+- [ADR-0001](adr/0001-enforce-hexagonal-boundaries-with-import-linter.md): enforce boundaries with import-linter.
+- [ADR-0002](adr/0002-validation-loop-tool-selection.md): validation-loop tool selection and exclusions.
+- [ADR-0003](adr/0003-unit-of-work-commit-authority.md): the UnitOfWork is the sole commit authority.
+- [ADR-0004](adr/0004-utc-timestamps-owned-by-the-domain.md): entities own their UTC timestamps.
+
+## Source
+
+- [Repository](https://github.com/MatthiasEg/python-hexagonal-architecture-template)
