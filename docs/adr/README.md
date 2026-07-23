@@ -5,10 +5,10 @@ and, most importantly, the alternatives that were rejected and why. Read these b
 changing the architecture or the validation loop; they exist so a decision is not silently
 reversed by someone (human or agent) who never saw the tradeoff.
 
-Format is a trimmed [MADR](https://adr.github.io/madr/). Copy
-[`0000-adr-template.md`](0000-adr-template.md) for a new record, give it the next number, and
-never edit an accepted ADR to reverse it. Supersede it with a new one and mark the old one
-`Superseded by ADR-XXXX`.
+Format is a trimmed [MADR](https://adr.github.io/madr/). Copy the template,
+[`0000-adr-template.md`](https://github.com/MatthiasEg/python-hexagonal-architecture-template/blob/main/docs/adr/0000-adr-template.md),
+for a new record, give it the next number, and never edit an accepted ADR to reverse it.
+Supersede it with a new one and mark the old one `Superseded by ADR-XXXX`.
 
 | ADR | Decision | Status |
 |---|---|---|

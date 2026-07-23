@@ -158,8 +158,8 @@ fills. A longer comparison, with an honest "when not to use", is in
 ## Documentation
 
 - [Architecture](docs/architecture.md) · [Adding a feature](docs/adding-a-feature.md) ·
-  [Validation loop](docs/validation-loop.md) · [Agent-native](docs/agent-native.md) ·
-  [Comparison](docs/comparison.md) · [FAQ](docs/faq.md)
+  [Toolchain](docs/toolchain.md) · [Validation loop](docs/validation-loop.md) ·
+  [Agent-native](docs/agent-native.md) · [Comparison](docs/comparison.md) · [FAQ](docs/faq.md)
 - [Decision records](docs/adr/README.md): why the architecture and the loop are the way they are.
 
 The rendered docs site is MkDocs Material, published to GitHub Pages. Run `uv run poe docs-serve`

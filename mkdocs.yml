@@ -8,6 +8,11 @@ repo_name: MatthiasEg/python-hexagonal-architecture-template
 edit_uri: edit/main/docs/
 copyright: Copyright &copy; 2026 Matthias Egli, MIT License
 
+# The ADR template is a contributor scaffold, not site content. Keep it in the repo but exclude
+# it from the published site so its placeholder page (ADR-0000: <title>) never appears online.
+exclude_docs: |
+  adr/0000-adr-template.md
+
 theme:
   name: material
   palette:
@@ -48,6 +53,7 @@ nav:
   - Home: index.md
   - Architecture: architecture.md
   - Adding a feature: adding-a-feature.md
+  - Toolchain: toolchain.md
   - Validation loop: validation-loop.md
   - Agent-native: agent-native.md
   - Comparison: comparison.md
@@ -58,4 +64,3 @@ nav:
       - "ADR-0002: Validation-loop tool selection": adr/0002-validation-loop-tool-selection.md
       - "ADR-0003: UnitOfWork commit authority": adr/0003-unit-of-work-commit-authority.md
       - "ADR-0004: UTC timestamps owned by the domain": adr/0004-utc-timestamps-owned-by-the-domain.md
-      - Template: adr/0000-adr-template.md
